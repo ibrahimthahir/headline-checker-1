@@ -15,9 +15,16 @@
   <button onclick="semak()">Semak</button>
   <div id="hasil"></div>
 
-  <script>
-    async function semak() {
-      const tajuk = document.getElementById("tajuk").value;
+<script>
+  async function semak() {
+    const tajuk = document.getElementById("tajuk").value;
+
+    if (!tajuk.trim()) {
+      document.getElementById("hasil").innerHTML = "<span style='color:red;'>Sila masukkan tajuk terlebih dahulu.</span>";
+      return;
+    }
+
+    try {
       const response = await fetch("https://headline-checker-1-1.onrender.com/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -30,7 +37,11 @@
         <strong>Sebab:</strong><br> ${Array.isArray(data.sebab) ? data.sebab.map(s => • ${s}).join("<br>") : data.sebab}<br>
         <strong>Panjang Tajuk:</strong> ${data.panjang}
       `;
+    } catch (error) {
+      document.getElementById("hasil").innerHTML = "<span style='color:red;'>Ralat sambungan. Sila cuba lagi.</span>";
     }
-  </script>
+  }
+</script>
 </body>
 </html>
+
