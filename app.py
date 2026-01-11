@@ -1,10 +1,12 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import re
+from difflib import SequenceMatcher
 
 app = Flask(__name__)
 CORS(app)
 
-# Senarai kata larangan eksplisit (lucah + makian/cacian + ejaan alternatif)
+# Senarai kata larangan eksplisit (anda yang tentukan)
 kata_larangan = [
     # Lucah/tabu
     "fitnah", "hoax", "lucah", "kebencian",
@@ -22,12 +24,13 @@ kata_larangan = [
     "b4ru4", "puk1mak", "anj1ng", "b0d0h", "b@bi", "k*te", "4nj1ng"
 ]
 
-# Senarai frasa berisiko dengan 'makin'
+# Frasa berisiko
 frasa_makin_tidak_sesuai = [
     "makin benci", "makin marah", "makin teruk", "makin ganas",
     "makin melampau", "makin liar", "makin berani langgar"
 ]
 
+# Frasa lucah (anda yang tentukan)
 frasa_lucah = [
     "keluarkan air mani",
     "bergetar ovari",
@@ -40,6 +43,29 @@ frasa_lucah = [
     "gambar bogel",
     "cerita seks"
 ]
+
+# Pola regex untuk ejaan kreatif (selamat)
+pola_lucah = [
+    r"l[\W_]*u[\W_]*c[\W_]*a?[\W_]*h",
+    r"s[e3][kq]s",
+    r"b[o0]g[e3]l"
+]
+
+pola_makian = [
+    r"h[i1]na",
+    r"c[e3]rc[a@]",
+    r"k[u*]t[u*]k"
+]
+
+def hampir_sama(a, b):
+    """Fuzzy matching untuk ejaan hampir sama."""
+    return SequenceMatcher(None, a, b).ratio() > 0.80
+
+def padan_regex(teks, pola_list):
+    for pola in pola_list:
+        if re.search(pola, teks):
+            return True
+    return False
 
 def semak_headline(headline):
     if not headline:
@@ -57,15 +83,28 @@ def semak_headline(headline):
         if kata in teks:
             sebab.append(f"Mengandungi kata tabu/larangan: '{kata}'")
 
-    # Semak frasa berisiko dengan 'makin'
+    # Semak frasa lucah
+    for frasa in frasa_lucah:
+        if frasa in teks:
+            sebab.append(f"Frasa lucah dikesan: '{frasa}'")
+
+    # Semak frasa 'makin'
     for frasa in frasa_makin_tidak_sesuai:
         if frasa in teks:
             sebab.append(f"Frasa berisiko dikesan: '{frasa}'")
 
-    # Semak frasa lucah
-    for frasa in frasa_lucah:
-        if frasa in teks:
-            sebab.append(f"Tajuk mengandungi frasa lucah: '{frasa}'")
+    # Semak regex ejaan kreatif
+    if padan_regex(teks, pola_lucah):
+        sebab.append("Pola ejaan kreatif berkaitan kandungan tidak sesuai dikesan")
+
+    if padan_regex(teks, pola_makian):
+        sebab.append("Pola ejaan kreatif berkaitan makian dikesan")
+
+    # Fuzzy matching
+    for kata in teks.split():
+        for larangan in kata_larangan:
+            if hampir_sama(kata, larangan):
+                sebab.append(f"Perkataan hampir sama dengan kata larangan: '{kata}'")
 
     status = "Selari" if not sebab else "Tidak Selari"
 
