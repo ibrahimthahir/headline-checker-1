@@ -11,12 +11,12 @@ kata_larangan = [
     "kote", "puki", "tetek", "butuh",
     "jubur", "air mani", "air mazi",
     "betina", "jalang", "pelacur", "onani", "bogel", "bulu pubis",
-    "taik", "fak"
+    "taik", "fak",
 
     # Makian/cacian
     "bodoh", "bangang", "sial", "celaka",
     "babi", "anjing", "haram jadah",
-    "kurang ajar", "lancau", "pukimak", "barua", "bangsat", 
+    "kurang ajar", "lancau", "pukimak", "barua", "bangsat",
 
     # Ejaan alternatif/kod
     "b4ru4", "puk1mak", "anj1ng", "b0d0h", "b@bi", "k*te", "4nj1ng"
@@ -29,7 +29,16 @@ frasa_makin_tidak_sesuai = [
 ]
 
 frasa_lucah = [
-    "bergetar ovari", "keluarkan air mani", "betina nak mengawan"
+    "keluarkan air mani",
+    "bergetar ovari",
+    "betina nak mengawan",
+    "rangsangan seksual",
+    "nafsu syahwat",
+    "aksi ghairah",
+    "berahi melampau",
+    "video lucah",
+    "gambar bogel",
+    "cerita seks"
 ]
 
 def semak_headline(headline):
@@ -53,6 +62,11 @@ def semak_headline(headline):
         if frasa in teks:
             sebab.append(f"Frasa berisiko dikesan: '{frasa}'")
 
+    # Semak frasa lucah
+    for frasa in frasa_lucah:
+        if frasa in teks:
+            sebab.append(f"Tajuk mengandungi frasa lucah: '{frasa}'")
+
     status = "Selari" if not sebab else "Tidak Selari"
 
     return {
@@ -75,6 +89,4 @@ def check():
 if __name__ == '__main__':
     print("Server Flask sedang dimulakan...")
     app.run(debug=True)
-
-
 
