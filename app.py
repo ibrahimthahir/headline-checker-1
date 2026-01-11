@@ -11,7 +11,7 @@ kata_larangan = [
     "kote", "puki", "tetek", "butuh",
     "jubur", "air mani", "air mazi",
     "betina", "jalang", "pelacur", "onani", "bogel", "bulu pubis",
-    "taik",
+    "taik", "fak"
 
     # Makian/cacian
     "bodoh", "bangang", "sial", "celaka",
@@ -28,6 +28,9 @@ frasa_makin_tidak_sesuai = [
     "makin melampau", "makin liar", "makin berani langgar"
 ]
 
+frasa_lucah = [
+    "bergetar ovari", "keluarkan air mani", "betina nak mengawan"
+]
 def semak_headline(headline):
     if not headline:
         return {
@@ -71,4 +74,5 @@ def check():
 if __name__ == '__main__':
     print("Server Flask sedang dimulakan...")
     app.run(debug=True)
+
 
