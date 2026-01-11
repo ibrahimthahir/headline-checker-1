@@ -57,6 +57,16 @@ pola_makian = [
     r"k[u*]t[u*]k"
 ]
 
+# ⭐ Pola Regex Generik Untuk Ejaan Kreatif (Selamat & Berfungsi)
+pola_generik = [
+    r"[a@4]",          # variasi huruf A
+    r"[i1!|]",         # variasi huruf I
+    r"[o0]",           # variasi huruf O
+    r"[u*]",           # variasi huruf U
+    r"(.)\1{1,}",      # huruf berganda
+    r"[\W_]+",         # simbol di antara huruf
+]
+
 def hampir_sama(a, b):
     """Fuzzy matching untuk ejaan hampir sama."""
     return SequenceMatcher(None, a, b).ratio() > 0.80
@@ -93,12 +103,16 @@ def semak_headline(headline):
         if frasa in teks:
             sebab.append(f"Frasa berisiko dikesan: '{frasa}'")
 
-    # Semak regex ejaan kreatif
+    # Semak regex ejaan kreatif khusus
     if padan_regex(teks, pola_lucah):
         sebab.append("Pola ejaan kreatif berkaitan kandungan tidak sesuai dikesan")
 
     if padan_regex(teks, pola_makian):
         sebab.append("Pola ejaan kreatif berkaitan makian dikesan")
+
+    # ⭐ Semak regex generik (huruf simbol, nombor, jarak, ulang)
+    if padan_regex(teks, pola_generik):
+        sebab.append("Pola ejaan kreatif generik dikesan (berpotensi kata sensitif)")
 
     # Fuzzy matching
     for kata in teks.split():
