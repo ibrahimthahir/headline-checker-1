@@ -31,6 +31,7 @@ frasa_makin_tidak_sesuai = [
 frasa_lucah = [
     "bergetar ovari", "keluarkan air mani", "betina nak mengawan"
 ]
+
 def semak_headline(headline):
     if not headline:
         return {
@@ -74,5 +75,6 @@ def check():
 if __name__ == '__main__':
     print("Server Flask sedang dimulakan...")
     app.run(debug=True)
+
 
 
